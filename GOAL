@@ -1,0 +1,5 @@
+user can create posts
+    create user
+    login , register,logout
+    post ctreataion,
+    post delete (only for the owner)
