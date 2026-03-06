@@ -46,6 +46,10 @@ app.get('/login', (req, res) => {
     res.render('login')
 })
 
+app.get("/profile", isLoggedIn, (req, res) => {
+    res.send(req.user)
+})
+
 app.post('/login', async (req, res) => {
     const { email, password } = req.body
 
@@ -64,6 +68,21 @@ app.get('/logout', (req, res) => {
     res.redirect('/login')
 })
 
+function isLoggedIn(req, res, next) {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.send('You must be logged in to access this page');
+    }
+
+    try {
+        const data = jwt.verify(token, "shhhhh");
+        req.user = data;
+        next();
+    } catch (err) {
+        return res.status(403).send('Invalid or expired token');
+    }
+}
 
 app.listen(3000, () => {
     console.log("SERVER RUNING ON PORT: 3000");
