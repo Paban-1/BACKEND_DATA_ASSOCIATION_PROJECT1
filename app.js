@@ -64,6 +64,7 @@ app.get('/logout', (req, res) => {
     res.redirect('/login')
 })
 
+
 app.listen(3000, () => {
     console.log("SERVER RUNING ON PORT: 3000");
 })
