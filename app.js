@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const bcrypt = require('bcrypt')
 
 const userModel = require('./models/user')
+const postModel = require('./models/post')
 
 app.set('view engine', 'ejs')
 app.use(express.json())
@@ -29,10 +30,38 @@ app.post('/register', async (req, res) => {
                 email,
                 password: hash
             })
+            let token = jwt.sign({
+                email: user.email,
+                userId: user._id
+            }, "shhhhh",)
 
+            res.cookie('token', token)
+            res.send("User Registered Successfully")
         })
 
     })
+})
+
+app.get('/login', (req, res) => {
+    res.render('login')
+})
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body
+
+    let user = await userModel.findOne({ email })
+    if (!user) return res.status(500).send("Something went wrong")
+
+    bcrypt.compare(password, user.password, (err, result) => {
+        if (result) return res.status(200).send("Login Successful")
+        else res.redirect('/login')
+
+    })
+})
+
+app.get('/logout', (req, res) => {
+    res.cookie('token', "")
+    res.redirect('/login')
 })
 
 app.listen(3000, () => {

@@ -6,7 +6,7 @@ const postSchema = mongoose.Schema({
         ref: 'user'
     },
     date: {
-        type: date,
+        type: Date,
         default: Date.now
     },
     likes: [
